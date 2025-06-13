@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 
 async function updateOutages() {
-  const url = 'https://www.nbpower.com/OpenData/Outages/OutagesJson';
+  const url = 'https://www.nbpower.com/OpenData/Outages/outages.json';
 
   try {
     const response = await fetch(url, {
