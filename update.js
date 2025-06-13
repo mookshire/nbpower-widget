@@ -1,29 +1,23 @@
-const fetch = require("node-fetch");
-const fs = require("fs");
+const fs = require('fs');
+const fetch = require('node-fetch');
 
 async function updateOutages() {
-  const url = "https://www.nbpower.com/OpenData/Outages/OutagesJson";
-  const response = await fetch(url);
-  const data = await response.json();
+  const url = 'https://www.nbpower.com/OpenData/Outages/OutagesJson';
 
-  const grouped = data.reduce((acc, item) => {
-    const region = item.Region;
-    if (!acc[region]) {
-      acc[region] = { customers: 0, outages: 0 };
-    }
-    acc[region].customers += item.CustomersAffected;
-    acc[region].outages += 1;
-    return acc;
-  }, {});
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; NBPowerWidget/1.0; +https://github.com/mookshire)'
+      }
+    });
 
-  const result = Object.entries(grouped).map(([region, info]) => ({
-    region,
-    customers: info.customers,
-    outages: info.outages,
-  }));
-
-  fs.writeFileSync("outages.json", JSON.stringify(result, null, 2));
-  console.log("✅ outages.json updated");
+    const data = await response.json();
+    fs.writeFileSync('outages.json', JSON.stringify(data, null, 2));
+    console.log('✅ outages.json updated successfully!');
+  } catch (error) {
+    console.error('❌ Error fetching or writing outage data:', error);
+    process.exit(1);
+  }
 }
 
 updateOutages();
