@@ -7,9 +7,13 @@ async function updateOutages() {
   try {
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; NBPowerWidget/1.0; +https://github.com/mookshire)'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
       }
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
 
     const data = await response.json();
     fs.writeFileSync('outages.json', JSON.stringify(data, null, 2));
